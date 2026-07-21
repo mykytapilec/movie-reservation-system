@@ -34,3 +34,13 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+# Prisma
+prisma/*.db
+src/generated/prisma/
+
+# Local AI tools
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
