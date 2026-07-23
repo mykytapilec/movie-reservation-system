@@ -12,7 +12,14 @@ export default tseslint.config(
   {
     files: ['src/**/*.ts'],
     rules: {
-      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'warn',
     },
