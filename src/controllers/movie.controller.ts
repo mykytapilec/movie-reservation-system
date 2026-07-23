@@ -26,10 +26,7 @@ export const movieController = {
   },
 
   update: async (req: MovieIdRequest, res: Response): Promise<void> => {
-    const movie = await movieService.update(
-      req.params.id,
-      req.body,
-    );
+    const movie = await movieService.update(req.params.id, req.body);
 
     res.json(movie);
   },
