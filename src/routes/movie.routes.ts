@@ -7,29 +7,12 @@ import { asyncHandler } from '../utils/async-handler.js';
 
 export const movieRouter = Router();
 
-movieRouter.post(
-  '/',
-  validate(createMovieSchema),
-  asyncHandler(movieController.create),
-);
+movieRouter.post('/', validate(createMovieSchema), asyncHandler(movieController.create));
 
-movieRouter.get(
-  '/',
-  asyncHandler(movieController.findAll),
-);
+movieRouter.get('/', asyncHandler(movieController.findAll));
 
-movieRouter.get(
-  '/:id',
-  asyncHandler(movieController.findById),
-);
+movieRouter.get('/:id', asyncHandler(movieController.findById));
 
-movieRouter.patch(
-  '/:id',
-  validate(updateMovieSchema),
-  asyncHandler(movieController.update),
-);
+movieRouter.patch('/:id', validate(updateMovieSchema), asyncHandler(movieController.update));
 
-movieRouter.delete(
-  '/:id',
-  asyncHandler(movieController.remove),
-);
+movieRouter.delete('/:id', asyncHandler(movieController.remove));
