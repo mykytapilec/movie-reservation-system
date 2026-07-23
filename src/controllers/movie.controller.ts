@@ -1,5 +1,10 @@
 import type { Request, Response } from 'express';
+
 import { movieService } from '../services/movie.service.js';
+
+type MovieIdRequest = Request<{
+  id: string;
+}>;
 
 export const movieController = {
   create: async (req: Request, res: Response): Promise<void> => {
@@ -14,23 +19,23 @@ export const movieController = {
     res.json(movies);
   },
 
-  findById: async (req: Request, res: Response): Promise<void> => {
-    const movie = await movieService.findById(Number(req.params.id));
+  findById: async (req: MovieIdRequest, res: Response): Promise<void> => {
+    const movie = await movieService.findById(req.params.id);
 
     res.json(movie);
   },
 
-  update: async (req: Request, res: Response): Promise<void> => {
+  update: async (req: MovieIdRequest, res: Response): Promise<void> => {
     const movie = await movieService.update(
-      Number(req.params.id),
+      req.params.id,
       req.body,
     );
 
     res.json(movie);
   },
 
-  remove: async (req: Request, res: Response): Promise<void> => {
-    await movieService.remove(Number(req.params.id));
+  remove: async (req: MovieIdRequest, res: Response): Promise<void> => {
+    await movieService.remove(req.params.id);
 
     res.status(204).send();
   },

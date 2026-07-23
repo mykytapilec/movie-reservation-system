@@ -5,13 +5,13 @@ export const movieService = {
     title: string;
     description?: string;
     duration: number;
-  }): Promise<ReturnType<typeof prisma.movie.create>> => {
+  }) => {
     return prisma.movie.create({
       data,
     });
   },
 
-  findAll: async (): Promise<ReturnType<typeof prisma.movie.findMany>> => {
+  findAll: async () => {
     return prisma.movie.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -19,7 +19,7 @@ export const movieService = {
     });
   },
 
-  findById: async (id: number): Promise<ReturnType<typeof prisma.movie.findUnique>> => {
+  findById: async (id: string) => {
     return prisma.movie.findUnique({
       where: {
         id,
@@ -28,13 +28,13 @@ export const movieService = {
   },
 
   update: async (
-    id: number,
+    id: string,
     data: {
       title?: string;
       description?: string;
       duration?: number;
     },
-  ): Promise<ReturnType<typeof prisma.movie.update>> => {
+  ) => {
     return prisma.movie.update({
       where: {
         id,
@@ -43,7 +43,7 @@ export const movieService = {
     });
   },
 
-  remove: async (id: number): Promise<ReturnType<typeof prisma.movie.delete>> => {
+  remove: async (id: string) => {
     return prisma.movie.delete({
       where: {
         id,
