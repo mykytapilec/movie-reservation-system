@@ -7,11 +7,45 @@ export const reservationService = {
   create: async (
     data: Prisma.ReservationCreateInput,
   ): Promise<Awaited<ReturnType<typeof prisma.reservation.create>>> => {
+    const seatId = data.seat.connect?.id;
+    const showtimeId = data.showtime.connect?.id;
+
+    if (!seatId || !showtimeId) {
+      throw new AppError('Seat and showtime are required', 400);
+    }
+
+    const showtime = await prisma.showtime.findUnique({
+      where: {
+        id: showtimeId,
+      },
+    });
+
+    if (!showtime) {
+      throw new AppError('Showtime not found', 404);
+    }
+
+    const seat = await prisma.seat.findUnique({
+      where: {
+        id: seatId,
+      },
+    });
+
+    if (!seat) {
+      throw new AppError('Seat not found', 404);
+    }
+
+    if (seat.auditoriumId !== showtime.auditoriumId) {
+      throw new AppError(
+        'Seat does not belong to showtime auditorium',
+        400,
+      );
+    }
+
     const existingReservation = await prisma.reservation.findUnique({
       where: {
         seatId_showtimeId: {
-          seatId: data.seat.connect?.id as string,
-          showtimeId: data.showtime.connect?.id as string,
+          seatId,
+          showtimeId,
         },
       },
     });
