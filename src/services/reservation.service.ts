@@ -73,4 +73,46 @@ export const reservationService = {
       },
     });
   },
+
+  findById: async (
+    id: string,
+  ): Promise<Awaited<ReturnType<typeof prisma.reservation.findUnique>>> => {
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        seat: true,
+        showtime: {
+          include: {
+            movie: true,
+          },
+        },
+      },
+    });
+
+    if (!reservation) {
+      throw new AppError('Reservation not found', 404);
+    }
+
+    return reservation;
+  },
+
+  remove: async (id: string): Promise<void> => {
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!reservation) {
+      throw new AppError('Reservation not found', 404);
+    }
+
+    await prisma.reservation.delete({
+      where: {
+        id,
+      },
+    });
+  },
 };

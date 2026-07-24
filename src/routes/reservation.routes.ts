@@ -17,3 +17,13 @@ reservationRouter.get(
   '/',
   asyncHandler(reservationController.findAll),
 );
+
+reservationRouter.get(
+  '/:id',
+  asyncHandler(reservationController.findById),
+);
+
+reservationRouter.delete(
+  '/:id',
+  asyncHandler(reservationController.remove),
+);
