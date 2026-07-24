@@ -25,6 +25,15 @@ export const showtimeController = {
     res.json(showtime);
   },
 
+  getAvailableSeats: async (
+    req: ShowtimeIdRequest,
+    res: Response,
+  ): Promise<void> => {
+    const seats = await showtimeService.getAvailableSeats(req.params.id);
+
+    res.json(seats);
+  },
+
   update: async (req: ShowtimeIdRequest, res: Response): Promise<void> => {
     const showtime = await showtimeService.update(
       req.params.id,

@@ -26,6 +26,11 @@ showtimeRouter.get(
   asyncHandler(showtimeController.findById),
 );
 
+showtimeRouter.get(
+  '/:id/seats',
+  asyncHandler(showtimeController.getAvailableSeats),
+);
+
 showtimeRouter.patch(
   '/:id',
   validate(updateShowtimeSchema),
