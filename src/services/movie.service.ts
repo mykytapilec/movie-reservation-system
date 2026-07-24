@@ -1,6 +1,8 @@
 import { prisma } from '../database/prisma.js';
 import type { Prisma } from '../generated/prisma/client.js';
 
+import { AppError } from '../utils/app-error.js';
+
 export const movieService = {
   create: async (
     data: Prisma.MovieCreateInput,
@@ -10,7 +12,9 @@ export const movieService = {
     });
   },
 
-  findAll: async (): Promise<Awaited<ReturnType<typeof prisma.movie.findMany>>> => {
+  findAll: async (): Promise<
+    Awaited<ReturnType<typeof prisma.movie.findMany>>
+  > => {
     return prisma.movie.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -18,12 +22,20 @@ export const movieService = {
     });
   },
 
-  findById: async (id: string): Promise<Awaited<ReturnType<typeof prisma.movie.findUnique>>> => {
-    return prisma.movie.findUnique({
+  findById: async (
+    id: string,
+  ): Promise<Awaited<ReturnType<typeof prisma.movie.findUnique>>> => {
+    const movie = await prisma.movie.findUnique({
       where: {
         id,
       },
     });
+
+    if (!movie) {
+      throw new AppError('Movie not found', 404);
+    }
+
+    return movie;
   },
 
   update: async (
@@ -38,7 +50,9 @@ export const movieService = {
     });
   },
 
-  remove: async (id: string): Promise<Awaited<ReturnType<typeof prisma.movie.delete>>> => {
+  remove: async (
+    id: string,
+  ): Promise<Awaited<ReturnType<typeof prisma.movie.delete>>> => {
     return prisma.movie.delete({
       where: {
         id,

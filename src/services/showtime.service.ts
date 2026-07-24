@@ -33,7 +33,7 @@ export const showtimeService = {
   findById: async (
     id: string,
   ): Promise<Awaited<ReturnType<typeof prisma.showtime.findUnique>>> => {
-    return prisma.showtime.findUnique({
+    const showtime = await prisma.showtime.findUnique({
       where: {
         id,
       },
@@ -42,6 +42,12 @@ export const showtimeService = {
         auditorium: true,
       },
     });
+
+    if (!showtime) {
+      throw new AppError('Showtime not found', 404);
+    }
+
+    return showtime;
   },
 
   getAvailableSeats: async (showtimeId: string): Promise<
