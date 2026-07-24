@@ -1,6 +1,8 @@
 import { prisma } from '../database/prisma.js';
 import type { Prisma } from '../generated/prisma/client.js';
 
+import { AppError } from '../utils/app-error.js';
+
 export const showtimeService = {
   create: async (
     data: Prisma.ShowtimeCreateInput,
@@ -14,7 +16,9 @@ export const showtimeService = {
     });
   },
 
-  findAll: async (): Promise<Awaited<ReturnType<typeof prisma.showtime.findMany>>> => {
+  findAll: async (): Promise<
+    Awaited<ReturnType<typeof prisma.showtime.findMany>>
+  > => {
     return prisma.showtime.findMany({
       orderBy: {
         startTime: 'asc',
@@ -38,6 +42,57 @@ export const showtimeService = {
         auditorium: true,
       },
     });
+  },
+
+  getAvailableSeats: async (showtimeId: string): Promise<
+    {
+      id: string;
+      row: string;
+      number: number;
+      isReserved: boolean;
+    }[]
+  > => {
+    const showtime = await prisma.showtime.findUnique({
+      where: {
+        id: showtimeId,
+      },
+      include: {
+        auditorium: {
+          include: {
+            seats: {
+              orderBy: [
+                {
+                  row: 'asc',
+                },
+                {
+                  number: 'asc',
+                },
+              ],
+            },
+          },
+        },
+        reservations: {
+          select: {
+            seatId: true,
+          },
+        },
+      },
+    });
+
+    if (!showtime) {
+      throw new AppError('Showtime not found', 404);
+    }
+
+    const reservedSeatIds = new Set(
+      showtime.reservations.map((reservation) => reservation.seatId),
+    );
+
+    return showtime.auditorium.seats.map((seat) => ({
+      id: seat.id,
+      row: seat.row,
+      number: seat.number,
+      isReserved: reservedSeatIds.has(seat.id),
+    }));
   },
 
   update: async (
